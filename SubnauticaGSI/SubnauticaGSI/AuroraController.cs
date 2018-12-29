@@ -81,6 +81,8 @@ namespace SubnauticaGSI
         {
             try
             {
+                //string json = "{\"user\":\"test\"," +
+                //  "\"password\":\"bla\"}";
                 int AuroraPort = 9088;
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://localhost:" + AuroraPort);
                 httpWebRequest.ContentType = "application/json";

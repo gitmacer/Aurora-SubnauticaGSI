@@ -17,3 +17,4 @@ D:\Source\Repos\Aurora-SubnauticaGSI\SubnauticaGSI\SubnauticaGSI\obj\Debug\Subna
 D:\Source\Repos\Aurora-SubnauticaGSI\SubnauticaGSI\SubnauticaGSI\obj\Debug\SubnauticaGSI.csproj.CopyComplete
 D:\Source\Repos\Aurora-SubnauticaGSI\SubnauticaGSI\SubnauticaGSI\obj\Debug\SubnauticaGSI.dll
 D:\Source\Repos\Aurora-SubnauticaGSI\SubnauticaGSI\SubnauticaGSI\obj\Debug\SubnauticaGSI.pdb
+D:\Source\Repos\Aurora-SubnauticaGSI\SubnauticaGSI\SubnauticaGSI\obj\Debug\SubnauticaGSI.csprojAssemblyReference.cache

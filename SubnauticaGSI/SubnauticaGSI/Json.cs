@@ -18,10 +18,18 @@ namespace SubnauticaGSI
         }
     }
 
+    public class GameStateNode
+    {
+        public PlayerState game_state { get; set; }
+
+        public GameStateNode()
+        {
+            this.game_state = AuroraController.state;
+        }
+    }
+
     public class PlayerNode
     {
-        public PlayerState player_state { get; set; }
-
         public string biom { get; set; }
 
         public int depth { get; set; } //only depth
@@ -46,7 +54,6 @@ namespace SubnauticaGSI
         public PlayerNode()
         {
             // set properties in default constructor to generate sample data
-            this.player_state = AuroraController.state;
 
             this.biom = Player.main.GetBiomeString();
 
@@ -112,6 +119,8 @@ namespace SubnauticaGSI
     public class GSINode
     {
         public ProviderNode provider { get; set; }
+        public GameStateNode game_state { get; set; }
+        //will be "null" when not in Game
         public PlayerNode player { get; set; }
         public NotificationNode notification { get; set; }
         public WorldNode world { get; set; }
@@ -119,9 +128,20 @@ namespace SubnauticaGSI
         public GSINode()
         {
             this.provider = new ProviderNode();
-            this.player = new PlayerNode();
-            this.notification = new NotificationNode();
-            this.world = new WorldNode();
+            this.game_state = new GameStateNode();
+
+            //only get PlayerInfo when InGame
+            if (AuroraController.state == PlayerState.Playing)
+            {
+                //will fail when not in Game 
+                try
+                {
+                    this.player = new PlayerNode();
+                    this.notification = new NotificationNode();
+                    this.world = new WorldNode();
+                }
+                catch { }
+            }
         }
     }
 }
