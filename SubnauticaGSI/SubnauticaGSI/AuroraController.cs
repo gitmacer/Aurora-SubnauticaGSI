@@ -1,14 +1,10 @@
 ﻿using Oculus.Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static SubnauticaGSI.Main;
 
 namespace SubnauticaGSI
 {
@@ -73,37 +69,43 @@ namespace SubnauticaGSI
             string json = JsonConvert.SerializeObject(new GSINode(), Formatting.Indented);
 
             if (json != jsonlast)
-            Send(json);
-            jsonlast = json;
+            {
+                jsonlast = json;
+                Send(json);
+            }
+
         }
 
         public static void Send(string json)
         {
-            try
+            new Thread(() => //Do not slowdown main thread (result in Game stutter)
             {
-                //string json = "{\"user\":\"test\"," +
-                //  "\"password\":\"bla\"}";
-                int AuroraPort = 9088;
-                var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://localhost:" + AuroraPort);
-                httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
-
-                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                try
                 {
-                    streamWriter.Write(json);
-                    streamWriter.Flush();
-                    streamWriter.Close();
+                    //string json = "{\"user\":\"test\"," +
+                    //  "\"password\":\"bla\"}";
+                    int AuroraPort = 9088;
+                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://localhost:" + AuroraPort);
+                    httpWebRequest.ContentType = "application/json";
+                    httpWebRequest.Method = "POST";
+    
+                    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                    {
+                        streamWriter.Write(json);
+                        streamWriter.Flush();
+                        streamWriter.Close();
+                    }
+    
+                    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                       var result = streamReader.ReadToEnd();
+                    }
                 }
-
-                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                catch (InvalidCastException e) //ignore Server issues (Aurora closed)
                 {
-                    var result = streamReader.ReadToEnd();
                 }
-            }
-            catch (InvalidCastException e) //ignore Server issues (Aurora closed)
-            {
-            }
+            }).Start();
         }
 
     }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace SubnauticaGSI
@@ -31,8 +28,9 @@ namespace SubnauticaGSI
     public class PlayerNode
     {
         public string biom { get; set; }
+        public string type { get; set; } //Base, Cyclops, Seamoth or Prawn
 
-        public int depth { get; set; } //only depth
+        //public int depth { get; set; } //only depth
         //public int surface_depth  { get; set; } //always 0?
         public int depth_level { get; set; } //also height
 
@@ -48,6 +46,9 @@ namespace SubnauticaGSI
 
         public PDA.State pda_state { get; set; }
 
+        public bool is_in_water_for_swimming { get; set; }
+        //public bool is_swimming { get; set; }
+
         public Player.MotorMode motor_mode { get; set; }
         public Player.Mode mode { get; set; }
 
@@ -57,8 +58,16 @@ namespace SubnauticaGSI
 
             this.biom = Player.main.GetBiomeString();
 
-            this.depth = Mathf.RoundToInt(Player.main.GetDepth());
-            //this.surface_depth = Mathf.RoundToInt(Player.main.GetSurfaceDepth());
+            var SubRoot = Player.main.GetCurrentSub();
+            var Vehicle = Player.main.GetVehicle();
+
+            if (SubRoot)
+                type = SubRoot.GetType().Equals(typeof(BaseRoot)) ? "Base" : "Cyclops";
+            else if (Vehicle)
+                type = Vehicle.GetType().Equals(typeof(SeaMoth)) ? "Seamoth" : "Prawn";
+
+                //this.depth = Mathf.RoundToInt(Player.main.GetDepth());
+                //this.surface_depth = Mathf.RoundToInt(Player.main.GetSurfaceDepth());
             this.depth_level = Mathf.RoundToInt(Player.main.depthLevel);
 
             this.health = Mathf.RoundToInt(Player.main.liveMixin.health);
@@ -70,6 +79,10 @@ namespace SubnauticaGSI
             this.oxygen_available = Mathf.RoundToInt(Player.main.GetOxygenAvailable());
 
             this.pda_state = Player.main.GetPDA().state;
+
+            this.is_in_water_for_swimming = Player.main.IsUnderwaterForSwimming();
+            //this.is_swimming = Player.main.IsSwimming(); //
+
 
             this.motor_mode = Player.main.motorMode;
             this.mode = Player.main.GetMode();
@@ -120,7 +133,7 @@ namespace SubnauticaGSI
     {
         public ProviderNode provider { get; set; }
         public GameStateNode game_state { get; set; }
-        //will be "null" when not in Game
+        //"null" when not in Game
         public PlayerNode player { get; set; }
         public NotificationNode notification { get; set; }
         public WorldNode world { get; set; }

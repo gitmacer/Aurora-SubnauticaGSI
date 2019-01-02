@@ -2,7 +2,7 @@
   "Id": "SubnauticaGSI",
   "DisplayName": "SubnauticaGSI",
   "Author": "macer",
-  "Version": "0.1.0",
+  "Version": "1.0.0",
   "Enable": true,
   "Priority": "Last",
   "AssemblyName": "SubnauticaGSI.dll",

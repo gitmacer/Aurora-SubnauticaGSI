@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SubnauticaGSI
 {
@@ -18,7 +15,7 @@ namespace SubnauticaGSI
         //Just for Debugging
         public static void Savetofile(string x = "NA")
         {
-            string path = @"c:\temp\Debug.txt";
+            string path = @"./QMods/SubnauticaGSI/Log.txt";
             // Create a file to write to.
 
             string createText = x + Environment.NewLine;
