@@ -5,6 +5,17 @@ namespace SubnauticaGSI
 {
     public class Main
     {
+        #region enums
+        public enum GameModes
+        {
+            Survival = 0,
+            Freedom = 1,
+            Hardcore = 2,
+            Creative = 3,
+            None = 4
+        }
+
+        #endregion
 
         public static void Patch()
         {
