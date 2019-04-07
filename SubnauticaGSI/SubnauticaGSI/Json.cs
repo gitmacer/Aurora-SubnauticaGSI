@@ -264,7 +264,7 @@ namespace SubnauticaGSI
             this.game_state = new GameStateNode();
 
             //only get PlayerInfo when InGame
-            if (AuroraController.state == PlayerState.Playing)
+            if (AuroraController.state == PlayerState.Playing || AuroraController.state == PlayerState.Paused)
             {
                 //will fail when not in Game 
                 try

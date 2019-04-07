@@ -12,7 +12,8 @@ namespace SubnauticaGSI
     {
         Menu,
         Loading,
-        Playing
+        Playing,
+        Paused
     }
 
     public class AuroraController : MonoBehaviour
@@ -60,6 +61,8 @@ namespace SubnauticaGSI
                 state = PlayerState.Menu;
             else if (!uGUI_SceneLoading.IsLoadingScreenFinished || uGUI.main.loading.IsLoading || !uGUI.main)
                 state = PlayerState.Loading;
+            else if (Time.timeScale == 0)
+                state = PlayerState.Paused;
             else
                 state = PlayerState.Playing;
         }
