@@ -101,7 +101,7 @@ namespace SubnauticaGSI
         
         //General Vehicle/Sub Variables:
         public int power { get; set; }
-        public float max_power { get; set; }
+        public int max_power { get; set; }
 
         public bool floodlight { get; set; }
 
@@ -144,7 +144,7 @@ namespace SubnauticaGSI
 
                 //General Variables:
                 this.power = Mathf.RoundToInt(SubRoot.powerRelay.GetPower());
-                this.max_power = SubRoot.powerRelay.GetMaxPower();
+                this.max_power = Mathf.RoundToInt(SubRoot.powerRelay.GetMaxPower());
                 //get_power_rating = SubRoot.GetPowerRating(); //power efficiency
 
                 this.lightstate = SubRoot.lightControl.state; // On = 0, On with Danger = 1, Off = 2
@@ -152,7 +152,7 @@ namespace SubnauticaGSI
 
                 //Cyclops Variables:
                 this.vehicle_health = type == "Cyclops" ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
-                this.vehicle_max_health = type == "Cyclops" ? SubRoot.damageManager.subLiveMixin.maxHealth : 0; //Base do not have health
+                this.vehicle_max_health = type == "Cyclops" ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
 
                 this.cyclops_warning = type == "Cyclops" && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
                 this.cyclops_fire_suppression_state = type == "Cyclops" && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
@@ -168,7 +168,7 @@ namespace SubnauticaGSI
                 var CyclopsNoise = SubRoot.GetComponentInParent<CyclopsNoiseManager>(); 
 
                 this.floodlight = type == "Cyclops" ? CyclopsNoise.lightingPanel.floodlightsOn : false;
-                this.cyclops_noice_percent = type == "Cyclops" ? CyclopsNoise.GetNoisePercent() : 0; 
+                this.cyclops_noice_percent = type == "Cyclops" ? CyclopsNoise.GetNoisePercent() : 0;
 
                 //Base Variables:
 
@@ -182,12 +182,13 @@ namespace SubnauticaGSI
 
                 Vehicle.GetDepth(out int Vehicle_depth, out int Vehicle_crushDepth);
                 this.crushDepth = Vehicle_crushDepth;
+                //this.crushDepth = Mathf.RoundToInt(Player.main.crushDepth);
                 //this.v_depth = Vehicle_depth;
 
                 var Vehicle_einterface = Vehicle.GetComponentsInParent<EnergyInterface>();
                 Vehicle.GetComponentInParent<EnergyInterface>().GetValues(out float charge, out float capacity);
                 this.power = Mathf.RoundToInt(charge);
-                this.max_power = capacity;
+                this.max_power = Mathf.RoundToInt(capacity);
 
                 var Lights = Vehicle.GetComponentInChildren<ToggleLights>();
                 //this.vehicle_lightstate = Lights.lightState;
