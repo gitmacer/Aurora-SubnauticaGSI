@@ -43,11 +43,10 @@ namespace SubnauticaGSI
 
         //public bool can_item_be_used { get; set; } //cut scenes? does no longer work?
 
-        public PDA.State pda_state { get; set; }
-
         public bool is_in_water_for_swimming { get; set; }
         //public bool is_swimming { get; set; }
 
+        public PDA.State pda_state { get; set; }
         public Player.MotorMode motor_mode { get; set; }
         public Player.Mode mode { get; set; }
         public Main.GameModes game_mode { get; set; }
@@ -95,9 +94,18 @@ namespace SubnauticaGSI
         }
     }
 
+    public enum VehicleSubs
+    {
+        None = -1,
+        Base = 0,
+        Cyclops = 1,
+        Seamoth = 2,
+        Prawn = 3
+    }
+
     public class VehicleSubNode
     {
-        public string type { get; set; } //Base, Cyclops, Seamoth or Prawn
+        public VehicleSubs type { get; set; }
         
         //General Vehicle/Sub Variables:
         public int power { get; set; }
@@ -135,12 +143,13 @@ namespace SubnauticaGSI
 
         public VehicleSubNode()
         {
+
             var SubRoot = Player.main.GetCurrentSub();
             var Vehicle = Player.main.GetVehicle();
 
             if (SubRoot)
             {
-                this.type = SubRoot.GetType().Equals(typeof(BaseRoot)) ? "Base" : "Cyclops";
+                this.type = SubRoot.GetType().Equals(typeof(BaseRoot)) ? VehicleSubs.Base : VehicleSubs.Cyclops;
 
                 //General Variables:
                 this.power = Mathf.RoundToInt(SubRoot.powerRelay.GetPower());
@@ -151,31 +160,31 @@ namespace SubnauticaGSI
                 //this.lightfade = SubRoot.lightControl.fadeDuration; //?
 
                 //Cyclops Variables:
-                this.vehicle_health = type == "Cyclops" ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
-                this.vehicle_max_health = type == "Cyclops" ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
+                this.vehicle_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
+                this.vehicle_max_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
 
-                this.cyclops_warning = type == "Cyclops" && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
-                this.cyclops_fire_suppression_state = type == "Cyclops" && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
+                this.cyclops_warning = type == VehicleSubs.Cyclops && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
+                this.cyclops_fire_suppression_state = type == VehicleSubs.Cyclops && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
 
-                this.cyclops_silent_running = type == "Cyclops" && SubRoot.silentRunning; //Cyclops is silent Running
+                this.cyclops_silent_running = type == VehicleSubs.Cyclops && SubRoot.silentRunning; //Cyclops is silent Running
 
                 var SubControl = SubRoot.GetComponentInParent<SubControl>();
-                this.cyclops_motor_mode = type == "Cyclops" ? SubControl.cyclopsMotorMode.cyclopsMotorMode : CyclopsMotorMode.CyclopsMotorModes.Standard;
-                this.cyclops_engine_on = type == "Cyclops" ? SubControl.cyclopsMotorMode.engineOn : false;
+                this.cyclops_motor_mode = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.cyclopsMotorMode : CyclopsMotorMode.CyclopsMotorModes.Standard;
+                this.cyclops_engine_on = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.engineOn : false;
 
                 //this.cyclops_Noise = type == "Cyclops" ? SubControl.cyclopsMotorMode.GetNoiseValue() : 0; //same as CyclopsNoise.noiseScalar //you can also easy "calculate" it out of "cyclopsMotorMode"
 
                 var CyclopsNoise = SubRoot.GetComponentInParent<CyclopsNoiseManager>(); 
 
-                this.floodlight = type == "Cyclops" ? CyclopsNoise.lightingPanel.floodlightsOn : false;
-                this.cyclops_noice_percent = type == "Cyclops" ? CyclopsNoise.GetNoisePercent() : 0;
+                this.floodlight = type == VehicleSubs.Cyclops ? CyclopsNoise.lightingPanel.floodlightsOn : false;
+                this.cyclops_noice_percent = type == VehicleSubs.Cyclops ? CyclopsNoise.GetNoisePercent() : 0;
 
                 //Base Variables:
 
             }
             else if (Vehicle)
             {
-                this.type = Vehicle.GetType().Equals(typeof(SeaMoth)) ? "Seamoth" : "Prawn";
+                this.type = Vehicle.GetType().Equals(typeof(SeaMoth)) ? VehicleSubs.Seamoth : VehicleSubs.Prawn;
 
                 this.vehicle_health = Mathf.RoundToInt(Vehicle.liveMixin.health);
                 this.vehicle_max_health = Vehicle.liveMixin.maxHealth;
@@ -196,8 +205,12 @@ namespace SubnauticaGSI
 
                 this.temperatur = Mathf.RoundToInt(Vehicle.GetTemperature());
 
-                //only Seamoth:
-                this.floodlight = type == "Seamoth" ? Lights.lightsActive : false;
+                //only Seamoth, Prawn always active:
+                this.floodlight = type == VehicleSubs.Seamoth ? Lights.lightsActive : true;
+            }
+            else
+            {
+                this.type = VehicleSubs.None;
             }
         }
     }
