@@ -115,7 +115,8 @@ namespace SubnauticaGSI
 
         public int vehicle_health { get; set; }
         public float vehicle_max_health { get; set; }
-        public int crushDepth { get; set; }
+        public int crush_depth { get; set; }
+        //public Ocean.DepthClass depth_class { get; set; }
         //public int v_depth { get; set; }
 
         //General Sub Variables:
@@ -137,9 +138,11 @@ namespace SubnauticaGSI
         //Base Variables:
 
         //Vehicle Variables:
+        //Prawn Variables:
+        public float thrust { get; set; }
         //public int vehicle_lightstate { get; set; }
         //public int vehicle_max_lightstate { get; set; }
-        public int temperatur { get; set; }
+        //public int temperatur { get; set; }
 
         public VehicleSubNode()
         {
@@ -162,10 +165,13 @@ namespace SubnauticaGSI
 
                 if (type == VehicleSubs.Cyclops) //Cyclops Variables:
                 {
+                    var crush = SubRoot.GetComponent<CrushDamage>();
+
                     this.vehicle_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
                     this.vehicle_max_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
 
-                    this.crushDepth = Mathf.RoundToInt(SubRoot.GetComponent<CrushDamage>().crushDepth);
+                    this.crush_depth = Mathf.RoundToInt(crush.crushDepth);
+                    //this.depth_class = crush.GetDepthClass();
 
                     this.cyclops_warning = type == VehicleSubs.Cyclops && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
                     this.cyclops_fire_suppression_state = type == VehicleSubs.Cyclops && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
@@ -194,20 +200,24 @@ namespace SubnauticaGSI
                 this.vehicle_max_health = Vehicle.liveMixin.maxHealth;
 
                 Vehicle.GetDepth(out int Vehicle_depth, out int Vehicle_crushDepth);
-                this.crushDepth = Vehicle_crushDepth;
+                this.crush_depth = Vehicle_crushDepth;
                 //this.crushDepth = Mathf.RoundToInt(Player.main.crushDepth);
                 //this.v_depth = Vehicle_depth;
 
                 var Vehicle_einterface = Vehicle.GetComponentsInParent<EnergyInterface>();
-                Vehicle.GetComponentInParent<EnergyInterface>().GetValues(out float charge, out float capacity);
-                this.power = Mathf.RoundToInt(charge);
-                this.max_power = Mathf.RoundToInt(capacity);
+                Vehicle.GetComponentInParent<EnergyInterface>().GetValues(out float _charge, out float _capacity);
+                this.power = Mathf.RoundToInt(_charge);
+                this.max_power = Mathf.RoundToInt(_capacity);
+
+                var exosuit = (Player.main.GetVehicle() as Exosuit);
+                exosuit.GetHUDValues(out float _health, out float _power, out float _thrust);
+                this.thrust = (float)Math.Round(_thrust, 2);
 
                 var Lights = Vehicle.GetComponentInChildren<ToggleLights>();
                 //this.vehicle_lightstate = Lights.lightState;
                 //this.vehicle_max_lightstate = Lights.maxLightStates;
 
-                this.temperatur = Mathf.RoundToInt(Vehicle.GetTemperature());
+                //this.temperatur = Mathf.RoundToInt(Vehicle.GetTemperature());
 
                 //only Seamoth, Prawn always active:
                 this.floodlight = type == VehicleSubs.Seamoth ? Lights.lightsActive : true;
