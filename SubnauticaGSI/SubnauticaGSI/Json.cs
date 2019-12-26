@@ -90,7 +90,7 @@ namespace SubnauticaGSI
 
             this.motor_mode = Player.main.motorMode;
             this.mode = Player.main.GetMode();
-            
+
         }
     }
 
@@ -106,7 +106,7 @@ namespace SubnauticaGSI
     public class VehicleSubNode
     {
         public VehicleSubs type { get; set; }
-        
+
         //General Vehicle/Sub Variables:
         public int power { get; set; }
         public int max_power { get; set; }
@@ -159,26 +159,30 @@ namespace SubnauticaGSI
                 this.lightstate = SubRoot.lightControl.state; // On = 0, On with Danger = 1, Off = 2
                 //this.lightfade = SubRoot.lightControl.fadeDuration; //?
 
-                //Cyclops Variables:
-                this.vehicle_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
-                this.vehicle_max_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
 
-                this.cyclops_warning = type == VehicleSubs.Cyclops && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
-                this.cyclops_fire_suppression_state = type == VehicleSubs.Cyclops && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
+                if (type == VehicleSubs.Cyclops) //Cyclops Variables:
+                {
+                    this.vehicle_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.health) : 0;
+                    this.vehicle_max_health = type == VehicleSubs.Cyclops ? Mathf.RoundToInt(SubRoot.damageManager.subLiveMixin.maxHealth) : 0; //Base do not have health
 
-                this.cyclops_silent_running = type == VehicleSubs.Cyclops && SubRoot.silentRunning; //Cyclops is silent Running
+                    this.crushDepth = Mathf.RoundToInt(SubRoot.GetComponent<CrushDamage>().crushDepth);
 
-                var SubControl = SubRoot.GetComponentInParent<SubControl>();
-                this.cyclops_motor_mode = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.cyclopsMotorMode : CyclopsMotorMode.CyclopsMotorModes.Standard;
-                this.cyclops_engine_on = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.engineOn : false;
+                    this.cyclops_warning = type == VehicleSubs.Cyclops && SubRoot.subWarning; //Cyclops Alarm (fire alarm)
+                    this.cyclops_fire_suppression_state = type == VehicleSubs.Cyclops && SubRoot.fireSuppressionState; //fire Suppression with Cyclops module
 
-                //this.cyclops_Noise = type == "Cyclops" ? SubControl.cyclopsMotorMode.GetNoiseValue() : 0; //same as CyclopsNoise.noiseScalar //you can also easy "calculate" it out of "cyclopsMotorMode"
+                    this.cyclops_silent_running = type == VehicleSubs.Cyclops && SubRoot.silentRunning; //Cyclops is silent Running
 
-                var CyclopsNoise = SubRoot.GetComponentInParent<CyclopsNoiseManager>(); 
+                    var SubControl = SubRoot.GetComponentInParent<SubControl>();
+                    this.cyclops_motor_mode = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.cyclopsMotorMode : CyclopsMotorMode.CyclopsMotorModes.Standard;
+                    this.cyclops_engine_on = type == VehicleSubs.Cyclops ? SubControl.cyclopsMotorMode.engineOn : false;
 
-                this.floodlight = type == VehicleSubs.Cyclops ? CyclopsNoise.lightingPanel.floodlightsOn : false;
-                this.cyclops_noice_percent = type == VehicleSubs.Cyclops ? CyclopsNoise.GetNoisePercent() : 0;
+                    //this.cyclops_Noise = type == "Cyclops" ? SubControl.cyclopsMotorMode.GetNoiseValue() : 0; //same as CyclopsNoise.noiseScalar //you can also easy "calculate" it out of "cyclopsMotorMode"
 
+                    var CyclopsNoise = SubRoot.GetComponentInParent<CyclopsNoiseManager>();
+
+                    this.floodlight = type == VehicleSubs.Cyclops ? CyclopsNoise.lightingPanel.floodlightsOn : false;
+                    this.cyclops_noice_percent = type == VehicleSubs.Cyclops ? CyclopsNoise.GetNoisePercent() : 0;
+                }
                 //Base Variables:
 
             }
@@ -251,7 +255,7 @@ namespace SubnauticaGSI
 
         public WorldNode()
         {
-            
+
             this.day_scalar = Math.Round(DayNightCycle.main.GetDayScalar(), 2);
             this.daylight_scaler = Math.Round(DayNightCycle.main.GetLocalLightScalar(), 2);
 
