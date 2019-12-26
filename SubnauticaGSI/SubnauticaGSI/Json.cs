@@ -8,11 +8,31 @@ namespace SubnauticaGSI
     {
         public string name { get; set; }
         public int appid { get; set; }
+        public ModVerNode modver { get; set; }
 
         public ProviderNode()
         {
-            this.name = "subnautica"; this.appid = 264710;
+            this.name = "subnautica"; 
+            this.appid = 264710; 
+            this.modver = new ModVerNode();
         }
+    }
+    public class ModVerNode
+    {
+        public int major { get; set; }
+        public int minor { get; set; }
+        public int build { get; set; }
+        public int revision { get; set; }
+
+        public ModVerNode()
+        {
+            var ModInfo = QModManager.API.QModAPI.GetMyMod();
+            this.major = ModInfo.ParsedVersion.Major;
+            this.minor = ModInfo.ParsedVersion.Minor;
+            this.build = ModInfo.ParsedVersion.Build;
+            this.revision = ModInfo.ParsedVersion.Revision;
+        }
+
     }
 
     public class GameStateNode
@@ -208,10 +228,13 @@ namespace SubnauticaGSI
                 Vehicle.GetComponentInParent<EnergyInterface>().GetValues(out float _charge, out float _capacity);
                 this.power = Mathf.RoundToInt(_charge);
                 this.max_power = Mathf.RoundToInt(_capacity);
-
-                var exosuit = (Player.main.GetVehicle() as Exosuit);
-                exosuit.GetHUDValues(out float _health, out float _power, out float _thrust);
-                this.thrust = (float)Math.Round(_thrust, 2);
+                
+                if (type == VehicleSubs.Prawn)
+                {
+                    var exosuit = (Player.main.GetVehicle() as Exosuit);
+                    exosuit.GetHUDValues(out float _health, out float _power, out float _thrust);
+                    this.thrust = (float)Math.Round(_thrust, 2);
+                }
 
                 var Lights = Vehicle.GetComponentInChildren<ToggleLights>();
                 //this.vehicle_lightstate = Lights.lightState;
