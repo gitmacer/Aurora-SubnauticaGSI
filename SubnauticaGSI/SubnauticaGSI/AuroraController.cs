@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +22,7 @@ namespace SubnauticaGSI
         private static GameObject controllerGO;
 
         public static PlayerState state;
+        public static Version version;
 
         private static string currentSceneName;
 
@@ -28,6 +30,8 @@ namespace SubnauticaGSI
 
         public static void Load()
         {
+            version = Assembly.GetExecutingAssembly().GetName().Version;
+
             controllerGO = new GameObject("AuroraController");
             controllerGO.AddComponent<AuroraController>();
             controllerGO.AddComponent<SceneCleanerPreserve>();

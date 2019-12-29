@@ -26,11 +26,10 @@ namespace SubnauticaGSI
 
         public ModVerNode()
         {
-            var ModInfo = QModManager.API.QModAPI.GetMyMod();
-            this.major = ModInfo.ParsedVersion.Major;
-            this.minor = ModInfo.ParsedVersion.Minor;
-            this.build = ModInfo.ParsedVersion.Build;
-            this.revision = ModInfo.ParsedVersion.Revision;
+            this.major = AuroraController.version.Major;
+            this.minor = AuroraController.version.Minor;
+            this.build = AuroraController.version.Build;
+            this.revision = AuroraController.version.Revision;
         }
 
     }
